@@ -141,6 +141,12 @@
                       </a></li>
                     
                       <li><a
+                        href='#repolintershouldrulerun'
+                        class='regular pre-open'>
+                        .shouldRuleRun
+                      </a></li>
+                    
+                      <li><a
                         href='#repolinterrunruleset'
                         class='regular pre-open'>
                         .runRuleset
@@ -212,6 +218,16 @@
                   href='#lintresult'
                   class="">
                   LintResult
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#numericaltargetsmap'
+                  class="">
+                  numericalTargetsMap
                   
                 </a>
                 
@@ -571,6 +587,27 @@ This Repolinter run generated the following results:
   <span class="hljs-attr">this-only-runs-if-npm:</span>
     <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
     <span class="hljs-attr">where:</span> <span class="hljs-string">[package-type=npm]</span>
+    <span class="hljs-attr">rule:</span>
+      <span class="hljs-string">...</span></pre>
+<p>Some axioms (ex. <a href="./docs/md/axioms.md#contributor-count"><code>contributor-count</code></a>) output numerical values instead of strings. For these axioms, numerical comparisons (<code>&#x3C;</code>, <code>></code>, <code>&#x3C;=</code>, <code>>=</code>) can be also be specified in the <code>where</code> conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
+<pre class='hljs'><span class="hljs-attr">axioms:</span>
+  <span class="hljs-attr">contributor-count:</span> <span class="hljs-string">contributors</span>
+<span class="hljs-attr">rules:</span>
+  <span class="hljs-attr">my-rule:</span>
+    <span class="hljs-attr">where:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&gt;6</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&lt;200</span>
     <span class="hljs-attr">rule:</span>
       <span class="hljs-string">...</span></pre>
 <h2>API</h2>
@@ -1453,6 +1490,7 @@ a bit time consuming, depending on the size of the Git history.</p>
 <li>
 <p><a href="#reference">Reference</a></p>
 <ul>
+<li><a href="#contributor-count"><code>contributor-count</code></a></li>
 <li><a href="#licensee"><code>licensee</code></a></li>
 <li><a href="#linguist"><code>linguist</code></a></li>
 <li><a href="#packagers"><code>packagers</code></a></li>
@@ -1460,18 +1498,32 @@ a bit time consuming, depending on the size of the Git history.</p>
 </li>
 </ul>
 <h2>Reference</h2>
+<h3><code>contributor-count</code></h3>
+<p>This axiom uses <a href="https://github.com/domharrington/node-gitlog#readme">gitlog</a> to count the number of contributors to the current git repository. Contributors are counted based on unique occurrences of an author name in the git log. This axiom is a numerical axiom, meaning numerical comparisons can be used.</p>
+<p>An example of using this axiom:</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
 <h3><code>licensee</code></h3>
 <p>This axiom uses <a href="https://github.com/licensee/licensee">licensee</a> to detect the license used in the current repository. To use this axiom licensee must be installed in your <code>PATH</code> or in the same directory as Repolinter.
 This axiom will return a list of <a href="https://spdx.org/licenses/">license identifiers</a> associated with the current repository.</p>
 <p>An example of using this axiom:</p>
 <pre class='hljs'>{
-  "axioms": {
-    "licensee": "license"
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"licensee"</span>: <span class="hljs-string">"license"</span>
   },
-  "rules": {
-    "my-rule": {
-      "where": ["license=Apache-2.0"],
-      ...
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"license=Apache-2.0"</span>],
+      <span class="hljs-comment">// ...</span>
     }
   }
 }</pre>
@@ -1479,13 +1531,13 @@ This axiom will return a list of <a href="https://spdx.org/licenses/">license id
 <p>This axiom uses GitHub's <a href="https://github.com/github/linguist">linguist</a> to detect programming languages in the current repository. To use this axiom, linguist must be installed in the system <code>PATH</code> or in the same directory as Repolinter. This axiom will return a lowercase list of programming languages from <a href="https://github.com/github/linguist/blob/master/lib/linguist/languages.yml">this list of supported languages</a>.</p>
 <p>An example of using this axiom:</p>
 <pre class='hljs'>{
-  "axioms": {
-    "linguist":" language"
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"linguist"</span>:<span class="hljs-string">" language"</span>
   },
-  "rules": {
-    "my-rule": {
-      "where": ["language=javascript"],
-      ...
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"language=javascript"</span>],
+      <span class="hljs-comment">// ...</span>
     }
   }
 }</pre>
@@ -1918,6 +1970,97 @@ Set to null for repolinter to automatically find it in the repository.
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#lintresult">LintResult</a>></code>:
         An object representing the output of the linter
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolintershouldrulerun'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>shouldRuleRun(validTargets, ruleAxioms)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Checks a rule's list of axioms against a list of valid
+targets, and determines if the rule should run or not
+based on the following rules criteria:</p>
+<ul>
+<li>The rule's list has a direct match on a target OR</li>
+<li>The rule specifies a numerical axiom (ex. >) and the target
+list contains a target that matches that axiom.</li>
+</ul>
+<p>Supported numerical axioms are >, &#x3C;, >=, &#x3C;=, and = Only</p>
+
+    <div class='pre p1 fill-light mt0'>shouldRuleRun(validTargets: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>, ruleAxioms: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>validTargets</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>)</code>
+	    The axiom target list in "target=thing" format, including the wildcard entry ("target=
+<em>").
+For numerical targets it is assumed that only one entry and the wildcard are present (e.g. ["target=2", "target=3", "target=</em>
+"] is invalid)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleAxioms</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>)</code>
+	    The rule "where" specification to validate against.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+        The list pf unsatisfied axioms, if any. Empty array indicates the rule should run.
 
       
     
@@ -3952,6 +4095,55 @@ from results.</p>
         </div>
       
     </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='numericaltargetsmap'>
+      numericalTargetsMap
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>numericalTargetsMap</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
   
 
   
