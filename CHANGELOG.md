@@ -1,3 +1,54 @@
+## [0.11.2](https://github.com/todogroup/repolinter/compare/v0.11.1...v0.11.2) (2021-09-27)
+
+
+### Bug Fixes
+
+* update dockerfile to fix bad copying ([#224](https://github.com/todogroup/repolinter/issues/224)) ([92389be](https://github.com/todogroup/repolinter/commit/92389bec927d91c0220dd0f9f01d7c1a0c1148be))
+
+## [0.11.1](https://github.com/todogroup/repolinter/compare/v0.11.0...v0.11.1) (2021-04-14)
+
+
+### Bug Fixes
+
+* update github-markup to remove python2 dependency ([#209](https://github.com/todogroup/repolinter/issues/209)) ([0c7c50c](https://github.com/todogroup/repolinter/commit/0c7c50c41b620f876d1da84318800a9dde9cc9d6))
+
+# [0.11.0](https://github.com/todogroup/repolinter/compare/v0.10.1...v0.11.0) (2021-04-14)
+
+
+### Features
+
+* add support for inheriting rulesets ([#207](https://github.com/todogroup/repolinter/issues/207)) ([ca1ae01](https://github.com/todogroup/repolinter/commit/ca1ae01996bbf30c687126fe51d84c4f2b979f7e)), closes [#21](https://github.com/todogroup/repolinter/issues/21)
+
+## [0.10.1](https://github.com/todogroup/repolinter/compare/v0.10.0...v0.10.1) (2021-03-25)
+
+
+### Bug Fixes
+
+* switch to canonical broken-link-checker ([#205](https://github.com/todogroup/repolinter/issues/205)) ([e62d767](https://github.com/todogroup/repolinter/commit/e62d767dc299c503d04ff61da6433fede6899eb8))
+
+# [0.10.0](https://github.com/todogroup/repolinter/compare/v0.9.0...v0.10.0) (2020-12-30)
+
+
+### Bug Fixes
+
+* add missing github-markup dependencies to dockerfile ([b5fb88a](https://github.com/todogroup/repolinter/commit/b5fb88ad4c763dcb2c693a2a41b7ce3b2f183bcf))
+* file-hash now accepts legacy configuration format ([d509274](https://github.com/todogroup/repolinter/commit/d50927423c965054d154adb56aaf1c48db778182))
+* fix broken link behavrior with files in subdirectories ([6c14db9](https://github.com/todogroup/repolinter/commit/6c14db9fb7348fd42b72bc4ffc4ef7e4d6376409))
+* fix pathing issues and succeed/fail criteria with no files found ([c0c101b](https://github.com/todogroup/repolinter/commit/c0c101b2871abb4df584b6ce6cb76aeda3c8eb0a))
+* remove Object.fromEntries for node 10 support ([0644374](https://github.com/todogroup/repolinter/commit/0644374c596f4e770e1d440f3980cd760ef9aa82))
+* update dockerfile to reconfigure bundle which (may) have caused some bugs on linux ([889da3e](https://github.com/todogroup/repolinter/commit/889da3ebf7475073726799a48b2a370798244af0))
+* upgrade broken-link-checker to add node 10 support ([4f00b33](https://github.com/todogroup/repolinter/commit/4f00b33c0e27d8a6bdad7c4ca6e00fe57ec94d90))
+* upgrade ruby gems to latest version ([e36c10a](https://github.com/todogroup/repolinter/commit/e36c10a9755a09c538d5dcc483c30f2e1b73c91a))
+
+
+### Features
+
+* finalize no broken links rule and dockerfile ([c1b1f72](https://github.com/todogroup/repolinter/commit/c1b1f721c788894bb2cb59044fb9740c7f01d9ea))
+* update dockerfile to reflect new dependencies ([c256af7](https://github.com/todogroup/repolinter/commit/c256af7cdb682bdd4880577207f40446c8ede640))
+* **no-broken-links:** add option to pass or not pass in external links ([aaa92f8](https://github.com/todogroup/repolinter/commit/aaa92f8e083c9e84ab4882f63cb905669f129930))
+* switch to fork of broken-link-checker ([7df3086](https://github.com/todogroup/repolinter/commit/7df308645ab883d70da15ac70e054e56a8a5628e))
+* WIP adding a broken link checker rule ([9e8bb98](https://github.com/todogroup/repolinter/commit/9e8bb98e34f55a52359fbbfa1a85071d9548f4d1))
+
 # Changelog
 
 ## 1.0.0

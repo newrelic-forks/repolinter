@@ -14,6 +14,10 @@
     "properties": {
       "$schema": { "type": "string" },
       "version": { "const": 2 },
+      "extends": {
+        "type": "string",
+        "title": "URL or path of ruleset file this ruleset extends"
+      },
       "axioms": {
         "type": "object",
         "title": "The axioms schema",
@@ -52,6 +56,18 @@
                     "properties": {
                       "options": {
                         "$ref": "../rules/apache-notice-config.json"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "bespractices-badge-present" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/best-practices-badge-present-config.json"
                       }
                     }
                   }
@@ -97,6 +113,14 @@
                   "then": {
                     "properties": {
                       "options": { "$ref": "../rules/file-hash-config.json" }
+                    }
+                  }
+                },
+                {
+                  "if": { "properties": { "type": { "const": "file-hashes-not-exist" } } },
+                  "then": {
+                    "properties": {
+                      "options": { "$ref": "../rules/file-hashes-not-exist-config.json" }
                     }
                   }
                 },
@@ -198,6 +222,20 @@
                     "properties": {
                       "options": {
                         "$ref": "../rules/git-working-tree-config.json"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": { "const": "large-file" }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/large-file-config.json"
                       }
                     }
                   }
