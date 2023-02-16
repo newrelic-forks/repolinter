@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>repolinter 0.9.0 | Documentation</title>
+  <title>repolinter 0.11.2 | Documentation</title>
   <meta name='description' content='Lint open source repositories'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>repolinter</h3>
-          <div class='mb1'><code>0.9.0</code></div>
+          <div class='mb1'><code>0.11.2</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -235,6 +235,36 @@
               
                 
                 <li><a
+                  href='#isabsoluteurl'
+                  class="">
+                  isAbsoluteURL
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#findconfig'
+                  class="">
+                  findConfig
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#loadconfig'
+                  class="">
+                  loadConfig
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#resulttarget'
                   class="">
                   ResultTarget
@@ -248,6 +278,16 @@
                   href='#formatresultbase'
                   class="">
                   FormatResultBase
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#filehash'
+                  class="">
+                  fileHash
                   
                 </a>
                 
@@ -385,26 +425,12 @@
     <h1><img src="https://raw.githubusercontent.com/todogroup/repolinter/master/docs/images/P_RepoLinter01_logo_only.png" alt="Repo Linter"> <img src="https://github.com/todogroup/repolinter/workflows/Build/badge.svg" alt="Build Status"></h1>
 <p>Lint open source repositories for common issues.</p>
 <h2>Installation</h2>
-<p>Repolinter requires <a href="https://nodejs.org/en/">Node.JS</a> >= v10 to function properly. Once Node.JS is installed, you can install Repolinter using <code>npm</code>:</p>
-<pre class='hljs'>npm install -g repolinter</pre>
+<p>Repolinter requires <a href="https://nodejs.org/en/">Node.JS</a> >= v12 to function properly. Once Node.JS is installed, you can install Repolinter using <code>npm</code>:</p>
 <h2>Linting a Local Repository</h2>
 <p>Once installed, run the following to lint a directory:</p>
-<pre class='hljs'>repolinter lint &lt;directory&gt;</pre>
 <p>The above command will lint <code>&#x3C;directory></code> with the local <code>repolinter.json</code> ruleset or the <a href="./rulesets/default.json">default ruleset</a> if none is found:</p>
-<pre class='hljs'>repolinter % repolinter lint .
-Target directory: &lt;directory&gt;
-Lint:
-✔ license-file-exists: Found file (LICENSE)
-✔ readme-file-exists: Found file (README.md)
-✔ contributing-file-exists: Found file (CONTRIBUTING)
-✔ code-of-conduct-file-exists: Found file (CODE-OF-CONDUCT)
-✔ changelog-file-exists: Found file (CHANGELOG)
-...
-repolinter % echo $?
-0</pre>
 <h2>Linting a Remote Repository</h2>
 <p>Repolinter also supports linting a git repository using the <code>--git</code> flag. With this flag enabled, the directory input will be interpreted as a git URL which Repolinter will automatically clone into a temporary directory.</p>
-<pre class='hljs'>repolinter lint -g https://github.com/todogroup/repolinter.git</pre>
 <h2>Formatting the Output</h2>
 <p>The Repolinter CLI currently supports three output formatting modes:</p>
 <ul>
@@ -413,20 +439,9 @@ repolinter % echo $?
 <li>Markdown</li>
 </ul>
 <p>You can switch formatters using the <code>--format</code> flag. An example of using the JSON formatter:</p>
-<pre class='hljs'>repolinter % repolinter lint --format json .
-{"params":{"targetDir":"/Users/nkoontz/Documents/code/repolinter","filterPaths":[],...</pre>
 <p>An example of using the Markdown formatter:</p>
-<pre class='hljs'>repolinter % repolinter lint --format markdown .
-<span class="hljs-meta">#</span><span class="bash"> Repolinter Report</span>
-
-This Repolinter run generated the following results:
-| ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
-|---|---|---|---|---|---|
-| 0 | 0 | 0 | 15 | 10 | 25 |
-...</pre>
 <h2>Limiting Paths</h2>
 <p>Repolinter supports an allowed list of paths through the <code>--allowPaths</code> option to prevent the accidental linting of build artifacts. These paths must still be contained in the target directory/repository.</p>
-<pre class='hljs'>repolinter lint --allowPaths ./a/path --allowPaths /another/path</pre>
 <h2>Disabling Modifications</h2>
 <p>By default Repolinter will automatically execute fixes as specified by the <a href="#rulesets">ruleset</a>. If this is not desired functionality, you can disable this with the <code>--dryRun</code> flag.</p>
 <h2>Ruleset Configuration</h2>
@@ -445,57 +460,15 @@ This Repolinter run generated the following results:
 </ol>
 <h3>Creating a Ruleset</h3>
 <p>Any ruleset starts with the following base, shown in both JSON and YAML format:</p>
-<pre class='hljs'>{
-  <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json"</span>,
-  <span class="hljs-attr">"version"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-attr">"axioms"</span>: {},
-  <span class="hljs-attr">"rules"</span>: {}
-}</pre>
-<pre class='hljs'><span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
-<span class="hljs-attr">axioms:</span> <span class="hljs-string">{}</span>
-<span class="hljs-attr">rules:</span></pre>
 <p>Where:</p>
 <ul>
 <li><strong><code>$schema</code></strong>- points to the <a href="./rulesets/schema.json">JSON schema</a> for all Repolinter rulesets. This schema both validates the ruleset and makes the ruleset creation process a bit easier.</li>
 <li><strong><code>version</code></strong> - specifies the ruleset version Repolinter should expect. Currently there are two versions: omitted for legacy config (<a href="https://github.com/todogroup/repolinter/blob/1a66d77e3a744222a049bdb4041437cbcf26a308/rulesets/default.json">example</a>) and <code>2</code> for all others. Use <code>2</code> unless you know what you're doing.</li>
-<li><strong><code>axiom</code></strong> - The axiom functionality, covered in <a href="#axioms">Axoms</a>.</li>
+<li><strong><code>axiom</code></strong> - The axiom functionality, covered in <a href="#axioms">Axioms</a>.</li>
 <li><strong><code>rules</code></strong> - The actual ruleset, covered in <a href="#rules">Rules</a>.</li>
 </ul>
 <h4>Rules</h4>
 <p>Rules are objects of the following format:</p>
-<pre class='hljs'><span class="hljs-string">"&lt;rule-name&gt;"</span>: {
-  <span class="hljs-string">"level"</span>: <span class="hljs-string">"error"</span> | <span class="hljs-string">"warning"</span> | <span class="hljs-string">"off"</span>,
-  <span class="hljs-string">"rule"</span>: {
-    <span class="hljs-string">"type"</span>: <span class="hljs-string">"&lt;rule-type&gt;"</span>,
-    <span class="hljs-string">"options"</span>: {
-      <span class="hljs-comment">// &lt;rule-options&gt;</span>
-    }
-  },
-  <span class="hljs-string">"where"</span>: [<span class="hljs-string">"condition=*"</span>],
-  <span class="hljs-string">"fix"</span>: {
-    <span class="hljs-string">"type"</span>: <span class="hljs-string">"&lt;fix-type&gt;"</span>,
-    <span class="hljs-string">"options"</span>: {
-      <span class="hljs-comment">// &lt;fix-options&gt;</span>
-    }
-  },
-  <span class="hljs-string">"policyInfo"</span>: <span class="hljs-string">"..."</span>,
-  <span class="hljs-string">"policyUrl"</span>: <span class="hljs-string">"..."</span>
-}</pre>
-<pre class='hljs'><span class="hljs-string">&lt;rule-name&gt;:</span>
-  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span> <span class="hljs-string">|</span> <span class="hljs-string">warning</span> <span class="hljs-string">|</span> <span class="hljs-string">off</span>
-  <span class="hljs-attr">rule:</span>
-    <span class="hljs-attr">type:</span> <span class="hljs-string">&lt;rule-type&gt;</span>
-    <span class="hljs-attr">options:</span>
-      <span class="hljs-string">&lt;rule-options&gt;</span>
-  <span class="hljs-attr">where:</span> <span class="hljs-string">[condition=*]</span>
-  <span class="hljs-attr">fix:</span>
-    <span class="hljs-attr">type:</span> <span class="hljs-string">&lt;fix-type&gt;</span>
-    <span class="hljs-attr">options:</span>
-      <span class="hljs-string">&lt;fix-options&gt;</span>
-  <span class="hljs-attr">policyInfo:</span> <span class="hljs-string">&gt;-
-    ...
-</span>  <span class="hljs-attr">policyUrl:</span> <span class="hljs-string">&gt;-</span>
-    <span class="hljs-string">...</span></pre>
 <ul>
 <li><strong><code>rule</code></strong> - The check to perform. Repolinter can perform any check listed under the <a href="./docs/rules.md">rules documentation</a>. Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the <code>file-existence</code> check can be used in a <code>README-file-exists</code> rule and a <code>LICENSE-file-exists</code> rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.</li>
 <li><strong><code>level</code></strong> - The error level to notify if the check fails. <code>warning</code> will not change the exit code and <code>off</code> will not run the check.</li>
@@ -504,118 +477,31 @@ This Repolinter run generated the following results:
 <li><strong><code>policyInfo</code></strong>, <strong><code>policyUrl</code></strong> <em>(optional)</em> - Information used by the formatter to indicate why the check exists from a policy perspective. Note: <code>policyInfo</code> will automatically have a period appended to it for formatting purposes.</li>
 </ul>
 <p>A minimal example of a rule that checks for the existence of a <code>README</code>:</p>
-<pre class='hljs'>"readme-file-exists" : {
-  "level": "error",
-  "rule": {
-    "type": "file-existence",
-    "options": {
-      "globsAny": ["README*"]
-    }
-  }
-}</pre>
-<pre class='hljs'><span class="hljs-attr">readme-file-exists:</span>
-  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
-  <span class="hljs-attr">rule:</span>
-    <span class="hljs-attr">type:</span> <span class="hljs-string">file-existence</span>
-    <span class="hljs-attr">options:</span>
-      <span class="hljs-attr">globsAny:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">README*</span></pre>
 <p>Checking that the <code>README</code> matches a certain hash, and replacing it if not:</p>
-<pre class='hljs'>"readme-file-up-to-date" : {
-  "level": "error",
-  "rule": {
-    "type": "file-hash",
-    "options": {
-      "globsAny": ["README*"],
-      "algorithm": "sha256",
-      "hash": "..."
-    }
-  },
-  "fix": {
-    "type": "file-create",
-    "options": {
-      "file": "README.md",
-      "replace": true,
-      "text": { "url": "www.example.com/mytext.txt" }
-    }
-  },
-  "policyInfo": "Gotta keep that readme up to date",
-  "policyUrl": "www.example.com/mycompany"
-}</pre>
-<pre class='hljs'><span class="hljs-attr">readme-file-up-to-date:</span>
-  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
-  <span class="hljs-attr">rule:</span>
-    <span class="hljs-attr">type:</span> <span class="hljs-string">file-hash</span>
-    <span class="hljs-attr">options:</span>
-      <span class="hljs-attr">globsAny:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">README*</span>
-      <span class="hljs-attr">algorithm:</span> <span class="hljs-string">sha256</span>
-      <span class="hljs-attr">hash:</span> <span class="hljs-string">"..."</span>
-  <span class="hljs-attr">fix:</span>
-    <span class="hljs-attr">type:</span> <span class="hljs-string">file-create</span>
-    <span class="hljs-attr">options:</span>
-      <span class="hljs-attr">file:</span> <span class="hljs-string">README.md</span>
-      <span class="hljs-attr">replace:</span> <span class="hljs-literal">true</span>
-      <span class="hljs-attr">text:</span>
-        <span class="hljs-attr">url:</span> <span class="hljs-string">www.example.com/mytext.txt</span>
-  <span class="hljs-attr">policyInfo:</span> <span class="hljs-string">Gotta</span> <span class="hljs-string">keep</span> <span class="hljs-string">that</span> <span class="hljs-string">readme</span> <span class="hljs-string">up</span> <span class="hljs-string">to</span> <span class="hljs-string">date</span>
-  <span class="hljs-attr">policyUrl:</span> <span class="hljs-string">www.example.com/mycompany</span></pre>
 <h4>Axioms</h4>
-<pre class='hljs'>"axioms": {
-  "&lt;axiom-id&gt;": "&lt;axiom-target&gt;"
-}</pre>
-<pre class='hljs'><span class="hljs-attr">axioms:</span>
-  <span class="hljs-string">&lt;axiom-id&gt;:</span> <span class="hljs-string">axiom-target</span></pre>
 <p>Each axiom is configured as a key value pair in the <code>axioms</code> object, where <code>&#x3C;axiom-id></code> specifies the program to run and <code>&#x3C;axiom-target></code> specifies the target to be used in the <code>where</code> conditional. The available axiom IDs can be found in the <a href="./docs/axioms.md">axiom documentation</a>. It should be noted that some axioms require external packages to run.</p>
 <p>An example configuration using an axiom to detect the packaging system for a project:</p>
-<pre class='hljs'>{
-  <span class="hljs-string">"$schema"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json"</span>,
-  <span class="hljs-string">"version"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"axioms"</span>: {
-    <span class="hljs-string">"packagers"</span>: <span class="hljs-string">"package-type"</span>
-  },
-  <span class="hljs-string">"rules"</span>: {
-    <span class="hljs-string">"this-only-runs-if-npm"</span>: {
-      <span class="hljs-string">"level"</span>: <span class="hljs-string">"error"</span>,
-      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"package-type=npm"</span>],
-      <span class="hljs-string">"rule"</span>: { <span class="hljs-comment">/* ... */</span> }
-    }
-  }
-}</pre>
-<pre class='hljs'><span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
-<span class="hljs-attr">axioms:</span>
-  <span class="hljs-attr">packagers:</span> <span class="hljs-string">package-type</span>
-<span class="hljs-attr">rules:</span>
-  <span class="hljs-attr">this-only-runs-if-npm:</span>
-    <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
-    <span class="hljs-attr">where:</span> <span class="hljs-string">[package-type=npm]</span>
-    <span class="hljs-attr">rule:</span>
-      <span class="hljs-string">...</span></pre>
 <p>Some axioms (ex. <a href="./docs/axioms.md#contributor-count"><code>contributor-count</code></a>) output numerical values instead of strings. For these axioms, numerical comparisons (<code>&#x3C;</code>, <code>></code>, <code>&#x3C;=</code>, <code>>=</code>) can be also be specified in the <code>where</code> conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.</p>
-<pre class='hljs'>{
-  <span class="hljs-string">"axioms"</span>: {
-    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
-  },
-  <span class="hljs-string">"rules"</span>: {
-    <span class="hljs-string">"my-rule"</span>: {
-      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
-      <span class="hljs-comment">// ...</span>
-    }
-  }
-}</pre>
-<pre class='hljs'><span class="hljs-attr">axioms:</span>
-  <span class="hljs-attr">contributor-count:</span> <span class="hljs-string">contributors</span>
-<span class="hljs-attr">rules:</span>
-  <span class="hljs-attr">my-rule:</span>
-    <span class="hljs-attr">where:</span>
-    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&gt;6</span>
-    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&lt;200</span>
-    <span class="hljs-attr">rule:</span>
-      <span class="hljs-string">...</span></pre>
+<h3>Extending Rulesets</h3>
+<p>A ruleset can extend another ruleset, in which case the two files will be
+recursively merged. Extended rulesets can themselves extend additional rulesets
+up to 20 rulesets deep.</p>
+<p>Extend a ruleset by including an "extends" top-level key which identifies a URL
+or file path:</p>
+<p>Relative paths are resolved relative to the location used to access the
+extending file.  For example, if repolinter is invoked as:</p>
+<pre><code>repolinter -u http://example.com/custom-rules.yaml
+</code></pre>
+<p>And that ruleset includes <code>extends: "./default.yaml"</code>, the path will be resolved
+relative to the original URL as <code>http://example.com/default.yaml</code>.  If instead
+repolinter is invoked as:</p>
+<pre><code>repolinter -r /etc/repolinter/custom-rules.yaml
+</code></pre>
+<p>And that ruleset includes <code>extends: "./default.yaml"</code>, the path will be resolved
+relative to the original file path as <code>/etc/repolinter/default.yaml</code>.</p>
+<p>YAML and JSON rulesets can be extended from either format.</p>
 <h2>API</h2>
 <p>Repolinter also includes an extensible JavaScript API:</p>
-<pre class='hljs'><span class="hljs-keyword">const</span> repolinter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'repolinter'</span>)
-<span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> repolinter.lint(<span class="hljs-string">'.'</span>)</pre>
 <p>This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under <a href="https://todogroup.github.io/repolinter/#api-reference">API Documentation</a>.</p>
 <h2>Going Further</h2>
 <ul>
@@ -626,7 +512,7 @@ This Repolinter run generated the following results:
 <li><a href="./docs/development.md">Developer Guide</a></li>
 </ul>
 <h2>License</h2>
-<p>This project is licensed under the <a href="LICENSE">Apache 2.0</a> license using <a href="https://reuse.software">https://reuse.software</a> best practice.</p>
+<p>This project is licensed under the <a href="LICENSE">Apache 2.0</a> license.</p>
 
   
 </section></div>
@@ -643,21 +529,20 @@ This Repolinter run generated the following results:
     <h1>Development</h1>
 <p>Repolinter is broken down into 7 main components, each of which is contained in a subfolder:</p>
 <ul>
-<li><strong>Axioms</strong> - located under <a href="../../axioms">axioms</a></li>
-<li><strong>CLI</strong> - located under <a href="../../bin">bin</a></li>
-<li><strong>Rules</strong> - located under <a href="../../rules">rules</a></li>
-<li><strong>Fixes</strong> - located under <a href="../../fixes">fixes</a></li>
-<li><strong>Formatters</strong> - located under <a href="../../formatters">formatters</a></li>
-<li><strong>Utilities</strong> - located under <a href="../../lib">lib</a></li>
-<li><strong>Built-In Rulesets and Schema</strong> - located under <a href="../../rulesets">rulesets</a></li>
+<li><strong>Axioms</strong> - located under <a href="../axioms">axioms</a></li>
+<li><strong>CLI</strong> - located under <a href="../bin">bin</a></li>
+<li><strong>Rules</strong> - located under <a href="../rules">rules</a></li>
+<li><strong>Fixes</strong> - located under <a href="../fixes">fixes</a></li>
+<li><strong>Formatters</strong> - located under <a href="../formatters">formatters</a></li>
+<li><strong>Utilities</strong> - located under <a href="../lib">lib</a></li>
+<li><strong>Built-In Rulesets and Schema</strong> - located under <a href="../rulesets">rulesets</a></li>
 </ul>
 <h2>Axioms</h2>
-<p>Axioms are registered in <a href="../../axioms/axioms.js">axioms/axioms.js</a> and in <a href="../../rulesets/schema.json">rulesets/schema.json</a>. An axiom implementation consists of a module with the following interface:</p>
-<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository.</p>
+<p>Axioms are registered in <a href="../axioms/axioms.js">axioms/axioms.js</a> and in <a href="../rulesets/schema.json">rulesets/schema.json</a>. An axiom implementation consists of a module with the following interface:</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository.</p>
 <p>The contents of the result should be an array of targets where <code>t.path</code> is a target that the axiom has determined is valid (ex. for language detecting axiom a possible result could be <code>new Result('', [{ path: 'javascript' passed: true }, { path: 'typescript', passed: true}], true)</code>). If the axiom fails to execute, it should return a failing result with an error message included instead of throwing an error.</p>
 <h2>Rules</h2>
-<p>A rule consists of two parts: a JavaScript module, which determines the rule's functionality and a JSON schema, which validates the rule's configuration options in rulesets. Rules are registered in <a href="../../rules/rules.js">rules/rules.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Rules are also documented under <a href="./rules.md">rules.md</a>.</p>
+<p>A rule consists of two parts: a JavaScript module, which determines the rule's functionality and a JSON schema, which validates the rule's configuration options in rulesets. Rules are registered in <a href="../rules/rules.js">rules/rules.js</a> and <a href="../rulesets/schema.json">rulesets/schema.json</a>. Rules are also documented under <a href="./rules.md">rules.md</a>.</p>
 <h3>Rule Configuration JSON Schema</h3>
 <p>The configuration JSON schema determines how <code>rule.options</code> should be validated for this rule. All <a href="https://json-schema.org/">JSON Schema</a> tools supported by <a href="https://ajv.js.org/">AJV</a> all available, with a few important caveats:</p>
 <ul>
@@ -666,42 +551,23 @@ This Repolinter run generated the following results:
 <li>The <code>$id</code> field should be an absolute raw.githubusercontent.com URL to where the schema is hosted on GitHub (ex. <a href="https://raw.githubusercontent.com/todogroup/repolinter/master/rules/apache-notice-config.json">https://raw.githubusercontent.com/todogroup/repolinter/master/rules/apache-notice-config.json</a>). This allows IDEs such as VSCode to apply the schema via a URL.</li>
 </ul>
 <p>To get started, you can use the following template:</p>
-<pre class='hljs'>{
-    <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"http://json-schema.org/draft-07/schema"</span>,
-    <span class="hljs-attr">"$id"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rules/&lt;rule-name&gt;-config.json"</span>,
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
-    <span class="hljs-attr">"properties"</span>: {}
-}</pre>
-<p>Due to limitations with JSON Schema, you also must register your rule configuration schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.rule.allOf</code>:</p>
-<pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;rule-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;rule-name&gt;-config.json"</span> } } } }</pre>
+<p>Due to limitations with JSON Schema, you also must register your rule configuration schema in <a href="../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.rule.allOf</code>:</p>
 <h3>JavaScript Implementation</h3>
 <p>A rule implementation consists of a module with the following interface:</p>
-<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, opts <span class="hljs-comment">/* type determined by your JSON schema */</span>) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository and <code>opts</code> is the options provided by the ruleset.</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository and <code>opts</code> is the options provided by the ruleset.</p>
 <p>A rule implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns checked when processing the rule. Including filenames in <code>Result#message</code> is discouraged as it makes formatting difficult. If a rule fails to execute, it should throw an error.</p>
 <h2>Fixes</h2>
-<p>A fix, similar to a rule, consists of two parts: a JavaScript module, which determines the fix's functionality and a JSON schema, which validates the fix's configuration options in rulesets. Fixes are registered in <a href="../../fixes/fixes.js">fixes/fixes.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Fixes are also documented under <a href="./fixes.md">fixes.md</a>.</p>
+<p>A fix, similar to a rule, consists of two parts: a JavaScript module, which determines the fix's functionality and a JSON schema, which validates the fix's configuration options in rulesets. Fixes are registered in <a href="../fixes/fixes.js">fixes/fixes.js</a> and <a href="../rulesets/schema.json">rulesets/schema.json</a>. Fixes are also documented under <a href="./fixes.md">fixes.md</a>.</p>
 <h3>Fix Configuration JSON Schema</h3>
 <p>Fix JSON schemas work identically to <a href="#rule-configuration-json-schema">rule JSON schemas</a>, with the only difference the respective names and paths.</p>
 <p>To get started, you can use the following template:</p>
-<pre class='hljs'>{
-    <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"http://json-schema.org/draft-07/schema"</span>,
-    <span class="hljs-attr">"$id"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/fixes/&lt;fix-name&gt;-config.json"</span>,
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
-    <span class="hljs-attr">"properties"</span>: {}
-}</pre>
-<p>Similar as with rules, you must register the fix schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.fix.allOf</code> (note that this is a different list than the rule registration list):</p>
-<pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;fix-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;fix-name&gt;-config.json"</span> } } } }</pre>
+<p>Similar as with rules, you must register the fix schema in <a href="../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.fix.allOf</code> (note that this is a different list than the rule registration list):</p>
 <h3>JavaScript Implementation</h3>
 <p>Unlike rules, a fix implementation consists of a module with the following interface:</p>
-<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, options <span class="hljs-comment">/* Type determined by your JSON schema */</span>, targets: <span class="hljs-built_in">string</span>[], dryRun: <span class="hljs-built_in">boolean</span>) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository, <code>opts</code> is the options provided by the ruleset, <code>targets</code> are filepaths which did not pass the rule associated with this fix, and <code>dryRun</code> determines if the fix is allowed to make changes to the repository.</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository, <code>opts</code> is the options provided by the ruleset, <code>targets</code> are filepaths which did not pass the rule associated with this fix, and <code>dryRun</code> determines if the fix is allowed to make changes to the repository.</p>
 <p>The fix implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns changed. If the fix fails to execute, it should either return a failed result or throw an error.</p>
 <h2>Formatters</h2>
-<p>Formatters are exported by <a href="../../index.js">index.js</a> and manually called by the <a href="../../bin/repolinter.js">CLI</a>. A formatter implementation consists of the following interface:</p>
-<pre class='hljs'><span class="hljs-keyword">interface</span> Formatter {
-  formatOutput(output: LintResult, dryRun: <span class="hljs-built_in">boolean</span>): <span class="hljs-built_in">string</span>
-}</pre>
+<p>Formatters are exported by <a href="../index.js">index.js</a> and manually called by the <a href="../bin/repolinter.js">CLI</a>. A formatter implementation consists of the following interface:</p>
 <p>Formatters do not print to <code>STDOUT</code> instead choosing to return the output as a string.</p>
 <p>If needed, a formatter can accept extra configuration from the ruleset through the <code>formatOptions</code> property, which will be directly passed through to <code>LintResult#formatOptions</code>. These options are not typed and are formatter dependent.</p>
 
@@ -724,7 +590,6 @@ This Repolinter run generated the following results:
   
 
   
-
     <div class='pre p1 fill-light mt0'>Configuration Reference</div>
   
   
@@ -769,14 +634,14 @@ This Repolinter run generated the following results:
 <h2>Contents</h2>
 <ul>
 <li><a href="#contents">Contents</a></li>
-<li>
-<p><a href="#reference">Reference</a></p>
+<li><a href="#reference">Reference</a>
 <ul>
 <li><a href="#apache-notice"><code>apache-notice</code></a></li>
 <li><a href="#directory-existence"><code>directory-existence</code></a></li>
 <li><a href="#file-contents"><code>file-contents</code></a></li>
 <li><a href="#file-existence"><code>file-existence</code></a></li>
 <li><a href="#file-hash"><code>file-hash</code></a></li>
+<li><a href="#file-hashes-not-exist"><code>file-hashes-not-exist</code></a></li>
 <li><a href="#file-no-broken-links"><code>file-no-broken-links</code></a></li>
 <li><a href="#file-not-contents"><code>file-not-contents</code></a></li>
 <li><a href="#file-not-exists"><code>file-not-exists</code></a></li>
@@ -787,17 +652,15 @@ This Repolinter run generated the following results:
 <li><a href="#git-list-tree"><code>git-list-tree</code></a></li>
 <li><a href="#git-working-tree"><code>git-working-tree</code></a></li>
 <li><a href="#json-schema-passes"><code>json-schema-passes</code></a></li>
+<li><a href="#large-file"><code>large-file</code></a></li>
 <li><a href="#license-detectable-by-licensee"><code>license-detectable-by-licensee</code></a></li>
+<li><a href="#best-practices-badge-present"><code>best-practices-badge-present</code></a></li>
 </ul>
 </li>
 </ul>
 <h2>Reference</h2>
 <h3><code>apache-notice</code></h3>
 <p>No inputs. Checks for the presense of a <code>NOTICE</code> file in the root of the repository. This rule is equivalent to the following:</p>
-<pre class='hljs'>{
-  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"file-existence"</span>,
-  <span class="hljs-attr">"options"</span>: {<span class="hljs-attr">"globsAny"</span>: [<span class="hljs-string">"NOTICE*"</span>]}
-}</pre>
 <h3><code>directory-existence</code></h3>
 <p>Checks the existence of a given directory.</p>
 <table>
@@ -823,7 +686,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>fail-message</code></td>
@@ -883,7 +746,7 @@ This Repolinter run generated the following results:
 <td>The string to print instead of the regular expression when generating human-readable output.</td>
 </tr>
 <tr>
-<td><code>fail-on-non-exist</code></td>
+<td><code>fail-on-non-existent</code></td>
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
@@ -916,7 +779,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>dirs</code></td>
@@ -959,7 +822,7 @@ This Repolinter run generated the following results:
 <td><strong>Yes</strong></td>
 <td><code>string</code></td>
 <td></td>
-<td>The hash to check against. Unless a different <code>algorithm</code> is specified, this will be sha256.</td>
+<td>The hash to check against. Unless a different <code>algorithm</code> is specified, this will be sha256 hash.</td>
 </tr>
 <tr>
 <td><code>algorithm</code></td>
@@ -973,7 +836,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>succeed-on-non-exist</code></td>
@@ -981,6 +844,49 @@ This Repolinter run generated the following results:
 <td><code>boolean</code></td>
 <td><code>false</code></td>
 <td>Set to <code>true</code> to enable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-hashes-not-exist</code></h3>
+<p>Check files' hashes not included in a list of certain cryptographic hashes.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if all the files does not match any of the hashes, or no files are found.</td>
+</tr>
+<tr>
+<td><code>hashes</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>The hashes to check against. Unless a different <code>algorithm</code> is specified, this will be sha256 hash.</td>
+</tr>
+<tr>
+<td><code>algorithm</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>sha256</code></td>
+<td>The hash algorithm to use. Repolinter supports any algorithm supported by <a href="https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options">crypto.createHash</a></td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 </tbody>
 </table>
@@ -1010,7 +916,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>succeed-on-non-exist</code></td>
@@ -1030,6 +936,7 @@ This Repolinter run generated the following results:
 </table>
 <h3><code>file-not-contents</code></h3>
 <p>Checks none of a given list of files match a given regular expression.</p>
+<p>Note: provide either <code>content</code> or <code>contents</code></p>
 <table>
 <thead>
 <tr>
@@ -1050,10 +957,17 @@ This Repolinter run generated the following results:
 </tr>
 <tr>
 <td><code>content</code></td>
-<td><strong>Yes</strong></td>
+<td><strong>Yes</strong> if <code>contents</code> is undefined</td>
 <td><code>string</code></td>
 <td></td>
 <td>The regular expression to check using <code>String#search</code>. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. <code>".+@.+\\..+"</code> for an email address).</td>
+</tr>
+<tr>
+<td><code>contents</code></td>
+<td><strong>Yes</strong> if <code>content</code> is undefined</td>
+<td><code>string[]</code></td>
+<td></td>
+<td>Regular expressions to check using <code>String#search</code>. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. <code>".+@.+\\..+"</code> for an email address).</td>
 </tr>
 <tr>
 <td><code>nocase</code></td>
@@ -1077,7 +991,7 @@ This Repolinter run generated the following results:
 <td>The string to print instead of the regular expression when generating human-readable output.</td>
 </tr>
 <tr>
-<td><code>fail-on-non-exist</code></td>
+<td><code>fail-on-non-existent</code></td>
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
@@ -1110,7 +1024,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>dirs</code></td>
@@ -1174,7 +1088,7 @@ This Repolinter run generated the following results:
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search on the files. This will not effect the case sensitivity of <code>patterns</code>.</td>
+<td>Set to <code>true</code> to perform a case insensitive search on the files. This will not effect the case sensitivity of <code>patterns</code>.</td>
 </tr>
 <tr>
 <td><code>succeed-on-non-exist</code></td>
@@ -1332,6 +1246,35 @@ a bit time consuming, depending on the size of the Git history.</p>
 </tr>
 </tbody>
 </table>
+<h3><code>large-file</code></h3>
+<p>Check if a list of files' size on the file system that is larger than provided size.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to get files for. This rule passes if all of the files returned by the globs match are smaller than <em>size</em> or if no files are returned.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><strong>Yes</strong></td>
+<td><code>number</code></td>
+<td></td>
+<td>files sizes larger than this number (bytes) will fail this rule.</td>
+</tr>
+</tbody>
+</table>
 <h3><code>json-schema-passes</code></h3>
 <p>Checks if a given file matches a provided <a href="https://json-schema.org/">JSON schema</a>. This check is performed using <a href="https://ajv.js.org/">AJV</a>.</p>
 <table>
@@ -1364,7 +1307,7 @@ a bit time consuming, depending on the size of the Git history.</p>
 <td>No</td>
 <td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Set to <code>true</code> to perform an case insensitive search.</td>
+<td>Set to <code>true</code> to perform a case insensitive search.</td>
 </tr>
 <tr>
 <td><code>human-readable-message</code></td>
@@ -1384,6 +1327,28 @@ a bit time consuming, depending on the size of the Git history.</p>
 </table>
 <h3><code>license-detectable-by-licensee</code></h3>
 <p>Fails if Licensee doesn't detect the repository's license. This rule takes no inputs, but requires <code>licensee</code> in the path, see <a href="#command-line-dependencies">command line dependencies</a> for details.</p>
+<h3><code>best-practices-badge-present</code></h3>
+<p>Check Best Practices Badge is present in README. Optionally check a certain badge level is accomplished.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>minPercentage</code></td>
+<td>No</td>
+<td><code>integer</code></td>
+<td><code>null</code></td>
+<td>Minimum <a href="https://github.com/coreinfrastructure/best-practices-badge/blob/main/doc/api.md#tiered-percentage-in-openssf-best-practices-badge">Tiered Percentage</a> accomplished by project. <code>passing=100</code>, <code>silver=200</code>, <code>gold=300</code>, set to <code>0</code> or <code>null</code> to disable check.</td>
+</tr>
+</tbody>
+</table>
 
     <div class='pre p1 fill-light mt0'>Rules</div>
   
@@ -1437,8 +1402,7 @@ a bit time consuming, depending on the size of the Git history.</p>
 <h2>Contents</h2>
 <ul>
 <li><a href="#contents">Contents</a></li>
-<li>
-<p><a href="#reference">Reference</a></p>
+<li><a href="#reference">Reference</a>
 <ul>
 <li><a href="#file-create"><code>file-create</code></a></li>
 <li><a href="#file-modify"><code>file-modify</code></a></li>
@@ -1615,8 +1579,7 @@ a bit time consuming, depending on the size of the Git history.</p>
 <h2>Contents</h2>
 <ul>
 <li><a href="#contents">Contents</a></li>
-<li>
-<p><a href="#reference">Reference</a></p>
+<li><a href="#reference">Reference</a>
 <ul>
 <li><a href="#contributor-count"><code>contributor-count</code></a></li>
 <li><a href="#licensee"><code>licensee</code></a></li>
@@ -1629,48 +1592,15 @@ a bit time consuming, depending on the size of the Git history.</p>
 <h3><code>contributor-count</code></h3>
 <p>This axiom uses <a href="https://github.com/domharrington/node-gitlog#readme">gitlog</a> to count the number of contributors to the current git repository. Contributors are counted based on unique occurrences of an author name in the git log. This axiom is a numerical axiom, meaning numerical comparisons can be used.</p>
 <p>An example of using this axiom:</p>
-<pre class='hljs'>{
-  <span class="hljs-string">"axioms"</span>: {
-    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
-  },
-  <span class="hljs-string">"rules"</span>: {
-    <span class="hljs-string">"my-rule"</span>: {
-      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
-      <span class="hljs-comment">// ...</span>
-    }
-  }
-}</pre>
 <h3><code>licensee</code></h3>
 <p>This axiom uses <a href="https://github.com/licensee/licensee">licensee</a> to detect the license used in the current repository. To use this axiom licensee must be installed in your <code>PATH</code> or in the same directory as Repolinter.
 This axiom will return a list of <a href="https://spdx.org/licenses/">license identifiers</a> associated with the current repository.</p>
 <p>An example of using this axiom:</p>
-<pre class='hljs'>{
-  <span class="hljs-string">"axioms"</span>: {
-    <span class="hljs-string">"licensee"</span>: <span class="hljs-string">"license"</span>
-  },
-  <span class="hljs-string">"rules"</span>: {
-    <span class="hljs-string">"my-rule"</span>: {
-      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"license=Apache-2.0"</span>],
-      <span class="hljs-comment">// ...</span>
-    }
-  }
-}</pre>
 <h3><code>linguist</code></h3>
 <p>This axiom uses GitHub's <a href="https://github.com/github/linguist">linguist</a> to detect programming languages in the current repository. To use this axiom, linguist must be installed in the system <code>PATH</code> or in the same directory as Repolinter. This axiom will return a lowercase list of programming languages from <a href="https://github.com/github/linguist/blob/master/lib/linguist/languages.yml">this list of supported languages</a>.</p>
 <p>An example of using this axiom:</p>
-<pre class='hljs'>{
-  <span class="hljs-string">"axioms"</span>: {
-    <span class="hljs-string">"linguist"</span>:<span class="hljs-string">" language"</span>
-  },
-  <span class="hljs-string">"rules"</span>: {
-    <span class="hljs-string">"my-rule"</span>: {
-      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"language=javascript"</span>],
-      <span class="hljs-comment">// ...</span>
-    }
-  }
-}</pre>
 <h3><code>packagers</code></h3>
-<p>This axiom detects the projects packaging system by looking for project metadata files such as the <a href="https://docs.npmjs.com/files/package.json">package.json</a>. The list of detectable packaging systems can be found in the <a href="../../axioms/packagers.js">axiom source</a>.</p>
+<p>This axiom detects the projects packaging system by looking for project metadata files such as the <a href="https://docs.npmjs.com/files/package.json">package.json</a>. The list of detectable packaging systems can be found in the <a href="../axioms/packagers.js">axiom source</a>.</p>
 
     <div class='pre p1 fill-light mt0'>Axioms</div>
   
@@ -1729,7 +1659,6 @@ This axiom will return a list of <a href="https://spdx.org/licenses/">license id
 
   
     
-
   
 </section></div>
           
@@ -1790,21 +1719,6 @@ This axiom will return a list of <a href="https://spdx.org/licenses/">license id
 
   <p>This formatter outputs the LintResult CLI style, including
 colors on supported platforms.</p>
-<pre class='hljs'>✔ license-file-exists: found (LICENSE)
-✔ readme-file-exists: found (README.md)
-✔ contributing-file-exists: found (CONTRIBUTING)
-✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
-✔ changelog-file-exists: found (CHANGELOG)
-✔ readme-references-license: File README.md contains license
-✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
-✔ test-directory-exists: found (tests)
-✔ integrates-with-ci: found (.travis.yml)
-✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
-...
-✔ github-issue-template-exists: found (ISSUE_TEMPLATE)
-✔ github-pull-request-template-exists: found (PULL_REQUEST_TEMPLATE)
-✔ package-metadata-exists: found (Gemfile)
-✔ package-metadata-exists: found (package.json)</pre>
 
     <div class='pre p1 fill-light mt0'>defaultFormatter</div>
   
@@ -1914,13 +1828,6 @@ colors on supported platforms.</p>
 
   <p>This formatter outputs a markdown document designed to created into
 a GitHub issue or similar.</p>
-<pre class='hljs'><span class="hljs-section"># Repolinter Report</span>
-
-This Repolinter run generated the following results:
-| ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
-|---|---|---|---|---|---|
-| 0 | 0 | 0 | 15 | 10 | 25 |
-...</pre>
 <p>You can also specify formatOptions.disclaimer to include a disclaimer
 at the top of the markdown document.</p>
 
@@ -2440,7 +2347,7 @@ a list of objects with the output of the linter rules</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         A object representing or not the config validation succeeded (passed)
-an an error message if not (error)
+or an error message if not (error)
 
       
     
@@ -3928,7 +3835,6 @@ from results.</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></code>:
         
-
       
     
   
@@ -3998,7 +3904,6 @@ from results.</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></code>:
         
-
       
     
   
@@ -4299,6 +4204,245 @@ from results.</p>
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='isabsoluteurl'>
+      isAbsoluteURL
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Determine if provided string is an absolute URL.  That is, if it is
+parseable and has a 'host' URL component.</p>
+
+    <div class='pre p1 fill-light mt0'>isAbsoluteURL(url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    string to test
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        true if the string is an absolute URL
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='findconfig'>
+      findConfig
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Find a repolinter config file in the specified directory. This looks for
+files named repolint or repolinter with a file extension of .json, .yaml, or
+.yml in the specified directory or the nearest ancestor directory.  If no
+file is found, the default configuration that ships with repolinter is
+returned.</p>
+
+    <div class='pre p1 fill-light mt0'>findConfig(directory: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>directory</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    directory to search for config files in
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        absolute path of configuration file
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='loadconfig'>
+      loadConfig
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Load a ruleset config from the specified location.</p>
+
+    <div class='pre p1 fill-light mt0'>loadConfig(configLocation: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, processed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>configLocation</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A URL or local file containing a repolinter config file
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>processed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>?
+            = <code>[]</code>)</code>
+	    List of config files already processed, used to prevent loops
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        The loaded repolinter json config
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>any: Will throw an error if unable to parse config or if config is invalid
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='resulttarget'>
       ResultTarget
     </h3>
@@ -4480,6 +4624,87 @@ from results.</p>
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='filehash'>
+      fileHash
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Check if a file matches a certain cryptographic hash.</p>
+
+    <div class='pre p1 fill-light mt0'>fileHash(fs: FileSystem, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;Result></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fs</span> <code class='quiet'>(FileSystem)</code>
+	    A filesystem object configured with filter paths and target directories
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+	    The rule configuration
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;Result></code>:
+        The lint rule result
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='symbolformatter'>
       SymbolFormatter
     </h3>
@@ -4521,7 +4746,7 @@ from results.</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>formatResult(result, ruleName, errorSymbol, okSymbol)</span>
+            <span class='code strong strong truncate'>formatResult(result, ruleName, rulePolicyUrl, rulePolicyInfo, errorSymbol, okSymbol)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -4531,7 +4756,7 @@ from results.</p>
 
   <p>Format a FormatResult object into a line of human-readable text.</p>
 
-    <div class='pre p1 fill-light mt0'>formatResult(result: Result, ruleName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, errorSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, okSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+    <div class='pre p1 fill-light mt0'>formatResult(result: Result, ruleName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, rulePolicyUrl: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, rulePolicyInfo: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, errorSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, okSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
   
   
 
@@ -4559,6 +4784,26 @@ from results.</p>
           <div>
             <span class='code bold'>ruleName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    The name of the rule this result is from
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>rulePolicyUrl</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+            = <code>undefined</code>)</code>
+	    The policyUrl of the rule this result is from
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>rulePolicyInfo</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+            = <code>undefined</code>)</code>
+	    The policyInfo of the rule this result is from
 
           </div>
           
