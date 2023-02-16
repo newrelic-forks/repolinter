@@ -6,13 +6,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['14', '12', '10']
+        node-version: ['16']
         os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
     runs-on: ${{ matrix.os }}
     name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -79,7 +79,7 @@ jobs:
     name: Docker sample
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Semantic Release
         id: semantic
