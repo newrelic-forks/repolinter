@@ -1,0 +1,90 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Get NPM Cache Directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Setup Python for Github-Markup
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install docutils for Github-Markup
+        run: |
+          python -m pip install --upgrade pip
+          pip install docutils
+
+      - name: Setup Licensee, Linguist, and Github-Markup Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev libldap2-dev libidn11-dev
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Run Test
+        run: bundle exec npm test
+
+  test-docker:
+    runs-on: ubuntu-latest
+    name: Docker sample
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Docker Build
+        uses: docker/build-push-action@v2
+        with:
+          tags: todogroup/repolinter:latest
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Docker Run
+        run: docker run -t -v ${{ github.workspace }}:/src -w /src todogroup/repolinter:latest .
