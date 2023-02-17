@@ -1,3 +1,10 @@
+## [0.9.1](https://github.com/newrelic-forks/repolinter/compare/v0.9.0...v0.9.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* split build and cleanup release ([94d9fac](https://github.com/newrelic-forks/repolinter/commit/94d9facb166817637e463742435f4b9143e97684))
+
 # [0.9.0](https://github.com/newrelic-forks/repolinter/compare/v0.8.2...v0.9.0) (2023-02-17)
 
 
