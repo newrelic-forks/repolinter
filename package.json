@@ -26,13 +26,13 @@
   ],
   "author": "The TODO Group",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/todogroup/repolinter",
+  "homepage": "https://github.com/newrelic-forks/repolinter",
   "bugs": {
-    "url": "https://github.com/todogroup/repolinter/issues"
+    "url": "https://github.com/newrelic-forks/repolinter/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/todogroup/repolinter.git"
+    "url": "https://github.com/newrelic-forks/repolinter.git"
   },
   "dependencies": {
     "ajv": "^6.12.6",
