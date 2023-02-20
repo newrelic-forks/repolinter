@@ -1,3 +1,16 @@
+## [0.9.2](https://github.com/newrelic-forks/repolinter/compare/v0.9.1...v0.9.2) (2023-02-20)
+
+
+### Bug Fixes
+
+* use context var instead of hardcoding ([cf7593c](https://github.com/newrelic-forks/repolinter/commit/cf7593ca9392a405b8cd0e2e528f5878a48b47ff))
+* use context var instead of hardcoding ([ecc88bd](https://github.com/newrelic-forks/repolinter/commit/ecc88bdfa03f413ce9ccbeb3379ce1dd1861520c))
+
+
+### Reverts
+
+* strip quotes from stringified content ([56e223b](https://github.com/newrelic-forks/repolinter/commit/56e223b768955b3d46c29f5a18a2d4d4aeaa4a35))
+
 ## [0.9.1](https://github.com/newrelic-forks/repolinter/compare/v0.9.0...v0.9.1) (2023-02-17)
 
 
