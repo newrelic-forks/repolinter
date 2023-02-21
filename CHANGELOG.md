@@ -1,3 +1,10 @@
+## [0.9.3](https://github.com/newrelic-forks/repolinter/compare/v0.9.2...v0.9.3) (2023-02-21)
+
+
+### Bug Fixes
+
+* update package/package-lock when release runs ([32d326c](https://github.com/newrelic-forks/repolinter/commit/32d326cd5cc3b9c7f4ae6136a3c0b093e891a9f9))
+
 ## [0.9.2](https://github.com/newrelic-forks/repolinter/compare/v0.9.1...v0.9.2) (2023-02-20)
 
 
