@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem "licensee", ">= 9.9.0"
 gem "github-linguist", ">= 7.12.1"
 gem "commonmarker", "~> 0.23.6"
-gem "RedCloth", "~> 4.3"
+gem "RedCloth", "~> 4.3", ">= 4.3.3"
 gem "rdoc", "6.3.1"
 gem "org-ruby", "~> 0.9.12"
 gem "creole", "~> 0.5.0"
